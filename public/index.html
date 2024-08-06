@@ -20,6 +20,7 @@
             <button id="sendMessage">Enviar</button>
         </div>
     </div>
+
     <script>
         document.getElementById('sendMessage').addEventListener('click', async function () {
             const userInput = document.getElementById('userInput').value;
@@ -32,7 +33,7 @@
                 outputArea1.appendChild(userMessageDiv);
 
                 try {
-                    const response = await fetch('/chat', {
+                    const response = await fetch('http://localhost:3000/chat', { // Atualize a URL se necessário
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -40,10 +41,16 @@
                         body: JSON.stringify({ message: userInput }),
                     });
 
-                    const data = await response.json();
-                    const aiMessageDiv = document.createElement('div');
-                    aiMessageDiv.textContent = `Chef de Cozinha AI: ${data.response}`;
-                    outputArea2.appendChild(aiMessageDiv);
+                    if (response.ok) {
+                        const data = await response.json();
+                        const aiMessageDiv = document.createElement('div');
+                        aiMessageDiv.textContent = `Chef de Cozinha AI: ${data.response}`;
+                        outputArea2.appendChild(aiMessageDiv);
+                    } else {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.textContent = 'Erro ao obter resposta do servidor.';
+                        outputArea2.appendChild(errorDiv);
+                    }
                 } catch (error) {
                     console.error('Error:', error);
                     const errorDiv = document.createElement('div');
